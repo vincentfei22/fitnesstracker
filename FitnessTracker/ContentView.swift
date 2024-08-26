@@ -12,11 +12,19 @@ struct ContentView: View {
                     Button(action: {
                         selectedSession = session
                     }) {
-                        VStack(alignment: .leading) {
-                            Text(session.date, style: .date)
-                                .font(.headline)
-                            Text(session.bodyPart)
-                                .font(.subheadline)
+                        HStack {
+                            VStack(alignment: .leading) {
+                                Text(session.date, style: .date)
+                                    .font(.headline)
+                                Text(session.bodyPart)
+                                    .font(.subheadline)
+                            }
+                            Spacer()
+                            if session.exercises.count >= 1 {
+                                Text("\(session.exercises.count) 个动作")
+                                    .font(.caption)
+                                    .foregroundColor(.gray)
+                            }
                         }
                     }
                     .foregroundColor(.primary)

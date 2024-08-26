@@ -32,8 +32,16 @@ struct SessionDetailView: View {
                     Button(action: {
                         selectedExercise = exercise
                     }) {
-                        Text(exercise.name.isEmpty ? "未命名动作" : exercise.name)
-                            .foregroundColor(.primary)
+                        HStack{
+                            Text(exercise.name.isEmpty ? "未命名动作" : exercise.name)
+                                .foregroundColor(.primary)
+                            Spacer()
+                            if exercise.sets.count >= 1 {
+                                Text("\(exercise.sets.count) 组")
+                                    .font(.caption)
+                                    .foregroundColor(.gray)
+                            }
+                        }
                     }
                 }
                 .onDelete(perform: deleteExercise)
