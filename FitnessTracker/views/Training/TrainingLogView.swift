@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct ContentView: View {
+struct TrainingLogView: View {
     @EnvironmentObject var trainingData: TrainingData
     @State private var showingAddSession = false
     @State private var selectedSession: TrainingSession?
