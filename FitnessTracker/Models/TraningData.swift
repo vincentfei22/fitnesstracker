@@ -94,17 +94,6 @@ struct ExerciseSet: Identifiable, Codable {
 }
 
 extension TrainingData {
-    func calculateVolumeOverTimeForExercise(_ exercise: String) -> [(Date, Double)] {
-        let volumeData = sessions.flatMap { session -> [(Date, Double)] in
-            let exerciseVolume = session.exercises
-                .filter { $0.name == exercise }
-                .flatMap { $0.sets }
-                .reduce(0.0) { $0 + $1.weight * Double($1.reps) }
-            return [(session.date, exerciseVolume)]
-        }
-        return volumeData.sorted { $0.0 < $1.0 }
-    }
-    
     func calculateVolumeOverTimeForBodyPart(_ bodyPart: String) -> [(Date, Double)] {
         let volumeData = sessions
             .filter { $0.bodyPart == bodyPart }
@@ -113,6 +102,17 @@ extension TrainingData {
                     .reduce(0.0) { $0 + $1.weight * Double($1.reps) }
                 return (session.date, volume)
             }
+        return volumeData.sorted { $0.0 < $1.0 }
+    }
+
+    func calculateVolumeOverTimeForExercise(_ exercise: String) -> [(Date, Double)] {
+        let volumeData = sessions.flatMap { session -> [(Date, Double)] in
+            let exerciseVolume = session.exercises
+                .filter { $0.name == exercise }
+                .flatMap { $0.sets }
+                .reduce(0.0) { $0 + $1.weight * Double($1.reps) }
+            return exerciseVolume > 0 ? [(session.date, exerciseVolume)] : []
+        }
         return volumeData.sorted { $0.0 < $1.0 }
     }
 }
