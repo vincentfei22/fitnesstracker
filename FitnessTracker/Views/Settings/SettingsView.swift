@@ -44,11 +44,6 @@ struct SettingsView: View {
                         Text("\(trainingData.sessions.count)")
                     }
                     HStack {
-                        Text("总训练天数")
-                        Spacer()
-                        Text("\(trainingData.totalTrainingDays)")
-                    }
-                    HStack {
                         Text("总训练动作数")
                         Spacer()
                         Text("\(trainingData.totalExercises)")
