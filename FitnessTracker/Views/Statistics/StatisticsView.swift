@@ -136,5 +136,3 @@ struct ScrollableVolumeChart: View {
         .frame(height: availableHeight)
     }
 }
-
-// TrainingData extension remains the same

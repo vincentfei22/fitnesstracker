@@ -13,6 +13,14 @@ class TrainingData: ObservableObject {
         sortSessions()
     }
     
+    var totalTrainingDays: Int {
+        Set(sessions.map { Calendar.current.startOfDay(for: $0.date) }).count
+    }
+
+    var totalExercises: Int {
+        sessions.reduce(0) { $0 + $1.exercises.count }
+    }
+    
     func addSession(_ session: TrainingSession) {
         sessions.append(session)
         sortSessions()
@@ -52,6 +60,7 @@ class TrainingData: ObservableObject {
             print("Failed to load sessions: \(error.localizedDescription)")
         }
     }
+    
 }
 
 
