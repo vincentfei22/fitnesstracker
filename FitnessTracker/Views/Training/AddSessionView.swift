@@ -6,6 +6,7 @@ struct AddSessionView: View {
     @Binding var newlyAddedSession: TrainingSession?
     @State private var date = Date()
     @State private var bodyPart = ""
+    @State private var startTime = Date()
 
     var body: some View {
         NavigationView {
@@ -36,7 +37,13 @@ struct AddSessionView: View {
     }
     
     private func saveSession() {
-        let newSession = TrainingSession(date: date, bodyPart: bodyPart, exercises: [])
+        let newSession = TrainingSession(
+            date: date,
+            bodyPart: bodyPart,
+            exercises: [],
+            duration: 0,
+            startTime: date
+        )
         trainingData.addSession(newSession)
         newlyAddedSession = newSession
         isPresented = false

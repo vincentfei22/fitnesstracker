@@ -21,8 +21,11 @@ struct TrainingLogView: View {
                                     .font(.subheadline)
                             }
                             Spacer()
-                            if session.exercises.count >= 1 {
+                            VStack(alignment: .trailing) {
                                 Text("\(session.exercises.count) 个动作")
+                                    .font(.caption)
+                                    .foregroundColor(.gray)
+                                Text("时长: \(session.duration) 分钟")
                                     .font(.caption)
                                     .foregroundColor(.gray)
                             }

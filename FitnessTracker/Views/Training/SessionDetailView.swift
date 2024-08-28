@@ -21,12 +21,18 @@ struct SessionDetailView: View {
                 if isEditing {
                     DatePicker("日期", selection: $viewModel.date, displayedComponents: .date)
                     TextField("训练部位", text: $viewModel.bodyPart)
+                    HStack {
+                        Text("时长（分钟）")
+                        TextField("", value: $viewModel.duration, format: .number)
+                            .keyboardType(.numberPad)
+                    }
                 } else {
                     Text("日期: \(viewModel.date, style: .date)")
                     Text("训练部位: \(viewModel.bodyPart)")
+                    Text("时长: \(viewModel.duration) 分钟")
                 }
             }
-            
+
             Section(header: Text("训练动作")) {
                 ForEach($viewModel.exercises) { $exercise in
                     Button(action: {
@@ -56,7 +62,7 @@ struct SessionDetailView: View {
                 }
                 .foregroundColor(.blue)
             }
-            
+
             Section {
                 Button("删除该训练记录") {
                     showingDeleteAlert = true
@@ -83,17 +89,30 @@ struct SessionDetailView: View {
         .sheet(item: $selectedExercise) { exercise in
             if let index = viewModel.exercises.firstIndex(where: { $0.id == exercise.id }) {
                 NavigationView {
-                    ExerciseDetailView(exercise: $viewModel.exercises[index])
-                        .navigationTitle(exercise.name.isEmpty ? "新动作" : exercise.name)
-                        .toolbar {
-                            ToolbarItem(placement: .confirmationAction) {
-                                Button("完成") {
-                                    selectedExercise = nil
-                                }
+                    ExerciseDetailView(
+                        exercise: $viewModel.exercises[index],
+                        lastExerciseTime: $viewModel.lastExerciseTime,
+                        sessionDuration: $viewModel.duration
+                    )
+                    .navigationTitle(exercise.name.isEmpty ? "新动作" : exercise.name)
+                    .toolbar {
+                        ToolbarItem(placement: .confirmationAction) {
+                            Button("完成") {
+                                viewModel.updateDuration()
+                                selectedExercise = nil
                             }
                         }
+                    }
                 }
             }
+        }
+        .onAppear {
+            if viewModel.lastExerciseTime == nil {
+                viewModel.lastExerciseTime = viewModel.date
+            }
+        }
+        .onDisappear {
+            saveChanges()
         }
         .alert(isPresented: $showingDeleteAlert) {
             Alert(
@@ -106,20 +125,23 @@ struct SessionDetailView: View {
                 secondaryButton: .cancel()
             )
         }
-        .onDisappear {
-            if let index = trainingData.sessions.firstIndex(where: { $0.id == viewModel.id }) {
-                trainingData.sessions[index] = TrainingSession(
-                    id: viewModel.id,
-                    date: viewModel.date,
-                    bodyPart: viewModel.bodyPart,
-                    exercises: viewModel.exercises
-                )
-            }
-        }
     }
 
     private func deleteExercise(at offsets: IndexSet) {
         viewModel.exercises.remove(atOffsets: offsets)
+    }
+
+    private func saveChanges() {
+        if let index = trainingData.sessions.firstIndex(where: { $0.id == viewModel.id }) {
+            trainingData.sessions[index] = TrainingSession(
+                id: viewModel.id,
+                date: viewModel.date,
+                bodyPart: viewModel.bodyPart,
+                exercises: viewModel.exercises,
+                duration: viewModel.duration,
+                startTime: viewModel.lastExerciseTime
+            )
+        }
     }
 }
 
@@ -128,11 +150,23 @@ class SessionViewModel: ObservableObject {
     @Published var date: Date
     @Published var bodyPart: String
     @Published var exercises: [Exercise]
+    @Published var duration: Int
+    @Published var lastExerciseTime: Date?
 
     init(session: TrainingSession) {
         self.id = session.id
         self.date = session.date
         self.bodyPart = session.bodyPart
         self.exercises = session.exercises
+        self.duration = session.duration
+        self.lastExerciseTime = session.startTime
+    }
+
+    func updateDuration() {
+        let now = Date()
+        if let lastTime = lastExerciseTime {
+            duration += Int(now.timeIntervalSince(lastTime) / 60)
+        }
+        lastExerciseTime = now
     }
 }

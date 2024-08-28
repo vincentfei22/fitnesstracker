@@ -44,13 +44,19 @@ struct SettingsView: View {
                         Text("\(trainingData.sessions.count)")
                     }
                     HStack {
-                        Text("总训练动作数")
+                        Text("总训练时长")
                         Spacer()
-                        Text("\(trainingData.totalExercises)")
+                        Text(formatTotalDuration(trainingData.totalTrainingDuration))
                     }
                 }
             }
             .navigationTitle("设置")
         }
     }
+    private func formatTotalDuration(_ minutes: Int) -> String {
+        let hours = minutes / 60
+        let remainingMinutes = minutes % 60
+        return "\(hours)小时 \(remainingMinutes)分钟"
+    }
+ 
 }

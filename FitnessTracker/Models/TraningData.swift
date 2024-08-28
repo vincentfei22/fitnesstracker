@@ -21,6 +21,9 @@ class TrainingData: ObservableObject {
         sessions.reduce(0) { $0 + $1.exercises.count }
     }
     
+    var totalTrainingDuration: Int {
+        sessions.reduce(0) { $0 + $1.duration }
+    }
     func addSession(_ session: TrainingSession) {
         sessions.append(session)
         sortSessions()
@@ -69,12 +72,16 @@ struct TrainingSession: Identifiable, Codable {
     var date: Date
     var bodyPart: String
     var exercises: [Exercise]
-    
-    init(id: UUID = UUID(), date: Date, bodyPart: String, exercises: [Exercise]) {
+    var duration: Int
+    var startTime: Date?
+
+    init(id: UUID = UUID(), date: Date, bodyPart: String, exercises: [Exercise] = [], duration: Int = 0, startTime: Date? = nil) {
         self.id = id
         self.date = date
         self.bodyPart = bodyPart
         self.exercises = exercises
+        self.duration = duration
+        self.startTime = startTime
     }
 }
 
