@@ -6,7 +6,9 @@ struct StatisticsView: View {
     @State private var selectedBodyPart: String = ""
     @State private var selectedExercise: String = ""
     @State private var chartData: [(Date, Double)] = []
-
+    @AppStorage("preferredWeightUnit") private var preferredWeightUnit = "kg"
+    
+    
     var body: some View {
         NavigationView {
             GeometryReader { geometry in
@@ -25,7 +27,7 @@ struct StatisticsView: View {
                         }
 
                         Picker("Exercise", selection: $selectedExercise) {
-                            Text("总容量").tag("")
+                            Text("总容量(\(preferredWeightUnit))").tag("")
                             if !selectedBodyPart.isEmpty {
                                 ForEach(trainingData.getHistoryExercises(for: selectedBodyPart), id: \.self) { exercise in
                                     Text(exercise).tag(exercise)
