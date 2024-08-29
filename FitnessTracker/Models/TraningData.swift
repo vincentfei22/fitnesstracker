@@ -6,49 +6,56 @@ class TrainingData: ObservableObject {
     @Published var sessions: [TrainingSession] = []
 
     init() {
-        let databaseURL = try! FileManager.default
-            .url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
-            .appendingPathComponent("db.sqlite")
-        
-        dbQueue = try! DatabaseQueue(path: databaseURL.path)
-        
-        // Create tables
-        try! dbQueue.write { db in
-            try db.create(table: "trainingSession", ifNotExists: true) { t in
-                t.column("id", .text).primaryKey()
-                t.column("date", .datetime)
-                t.column("bodyPart", .text)
-                t.column("duration", .integer)
-                t.column("startTime", .datetime)
+        do {
+            let fileManager = FileManager.default
+            let databaseURL = try fileManager
+                .url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+                .appendingPathComponent("FitnessTracker.sqlite")
+
+            dbQueue = try DatabaseQueue(path: databaseURL.path)
+
+            try dbQueue.write { db in
+                try db.create(table: "trainingSession", ifNotExists: true) { t in
+                    t.column("id", .text).primaryKey()
+                    t.column("date", .datetime)
+                    t.column("bodyPart", .text)
+                    t.column("duration", .integer)
+                    t.column("startTime", .datetime)
+                }
+
+                try db.create(table: "exercise", ifNotExists: true) { t in
+                    t.column("id", .text).primaryKey()
+                    t.column("sessionId", .text).references("trainingSession", onDelete: .cascade)
+                    t.column("name", .text)
+                }
+
+                try db.create(table: "exerciseSet", ifNotExists: true) { t in
+                    t.column("id", .text).primaryKey()
+                    t.column("exerciseId", .text).references("exercise", onDelete: .cascade)
+                    t.column("weight", .double)
+                    t.column("reps", .integer)
+                }
             }
-            
-            try db.create(table: "exercise", ifNotExists: true) { t in
-                t.column("id", .text).primaryKey()
-                t.column("sessionId", .text).references("trainingSession", onDelete: .cascade)
-                t.column("name", .text)
-            }
-            
-            try db.create(table: "exerciseSet", ifNotExists: true) { t in
-                t.column("id", .text).primaryKey()
-                t.column("exerciseId", .text).references("exercise", onDelete: .cascade)
-                t.column("weight", .double)
-                t.column("reps", .integer)
-            }
+
+            loadSessions()
+        } catch {
+            fatalError("Database initialization failed: \(error.localizedDescription)")
         }
-        
-        loadSessions()
     }
 
     private func loadSessions() {
         do {
             try dbQueue.read { db in
-                var loadedSessions = try TrainingSession.fetchAll(db)
-                for i in 0..<loadedSessions.count {
-                    loadedSessions[i].exercises = try Exercise.filter(Exercise.Columns.sessionId == loadedSessions[i].id).fetchAll(db)
-                    for j in 0..<loadedSessions[i].exercises.count {
-                        loadedSessions[i].exercises[j].sets = try ExerciseSet.filter(ExerciseSet.Columns.exerciseId == loadedSessions[i].exercises[j].id).fetchAll(db)
+                let loadedSessions = try TrainingSession.fetchAll(db)
+                print("Loaded \(loadedSessions.count) sessions")
+
+                for var session in loadedSessions {
+                    session.exercises = try Exercise.filter(Exercise.Columns.sessionId == session.id).fetchAll(db)
+                    for i in 0..<session.exercises.count {
+                        session.exercises[i].sets = try ExerciseSet.filter(ExerciseSet.Columns.exerciseId == session.exercises[i].id).fetchAll(db)
                     }
                 }
+
                 DispatchQueue.main.async {
                     self.sessions = loadedSessions.sorted(by: { $0.date > $1.date })
                 }
@@ -131,9 +138,13 @@ struct TrainingSession: Identifiable, Codable, FetchableRecord, PersistableRecor
     let id: UUID
     var date: Date
     var bodyPart: String
-    var exercises: [Exercise]
     var duration: Int
     var startTime: Date?
+    var exercises: [Exercise]
+
+    enum CodingKeys: String, CodingKey {
+        case id, date, bodyPart, duration, startTime
+    }
 
     init(id: UUID = UUID(), date: Date, bodyPart: String, exercises: [Exercise] = [], duration: Int = 0, startTime: Date? = nil) {
         self.id = id
@@ -143,6 +154,27 @@ struct TrainingSession: Identifiable, Codable, FetchableRecord, PersistableRecor
         self.duration = duration
         self.startTime = startTime
     }
+
+    init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        id = try container.decode(UUID.self, forKey: .id)
+        date = try container.decode(Date.self, forKey: .date)
+        bodyPart = try container.decode(String.self, forKey: .bodyPart)
+        duration = try container.decode(Int.self, forKey: .duration)
+        startTime = try container.decodeIfPresent(Date.self, forKey: .startTime)
+        exercises = []  // Initialize as empty, to be filled later if needed
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(id, forKey: .id)
+        try container.encode(date, forKey: .date)
+        try container.encode(bodyPart, forKey: .bodyPart)
+        try container.encode(duration, forKey: .duration)
+        try container.encodeIfPresent(startTime, forKey: .startTime)
+    }
+
+    static let databaseTableName = "trainingSession"
 
     enum Columns {
         static let id = Column(CodingKeys.id)
