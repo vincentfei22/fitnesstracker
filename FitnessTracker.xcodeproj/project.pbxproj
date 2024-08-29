@@ -22,6 +22,7 @@
 		A98B0D6D2C7CD16F00B26DFA /* StatisticsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A98B0D6C2C7CD16F00B26DFA /* StatisticsView.swift */; };
 		A98B0D6F2C7CD1A100B26DFA /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A98B0D6E2C7CD1A100B26DFA /* SettingsView.swift */; };
 		A98B0D712C7CD21600B26DFA /* TrainingLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A98B0D702C7CD21600B26DFA /* TrainingLogView.swift */; };
+		A9AAA7D22C80216B00913E47 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = A9AAA7D12C80216B00913E47 /* GRDB */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -67,6 +68,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A9AAA7D22C80216B00913E47 /* GRDB in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -208,6 +210,7 @@
 			);
 			name = FitnessTracker;
 			packageProductDependencies = (
+				A9AAA7D12C80216B00913E47 /* GRDB */,
 			);
 			productName = FitnessTracker;
 			productReference = A983B3942C7AC41F0054C341 /* FitnessTracker.app */;
@@ -283,6 +286,7 @@
 			);
 			mainGroup = A983B38B2C7AC41F0054C341;
 			packageReferences = (
+				A9AAA7D02C80216B00913E47 /* XCRemoteSwiftPackageReference "GRDB" */,
 			);
 			productRefGroup = A983B3952C7AC41F0054C341 /* Products */;
 			projectDirPath = "";
@@ -675,6 +679,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		A9AAA7D02C80216B00913E47 /* XCRemoteSwiftPackageReference "GRDB" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/groue/GRDB.swift";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		A9AAA7D12C80216B00913E47 /* GRDB */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = A9AAA7D02C80216B00913E47 /* XCRemoteSwiftPackageReference "GRDB" */;
+			productName = GRDB;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = A983B38C2C7AC41F0054C341 /* Project object */;
 }
