@@ -23,6 +23,8 @@
 		A98B0D6F2C7CD1A100B26DFA /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A98B0D6E2C7CD1A100B26DFA /* SettingsView.swift */; };
 		A98B0D712C7CD21600B26DFA /* TrainingLogView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A98B0D702C7CD21600B26DFA /* TrainingLogView.swift */; };
 		A9AAA7D22C80216B00913E47 /* GRDB in Frameworks */ = {isa = PBXBuildFile; productRef = A9AAA7D12C80216B00913E47 /* GRDB */; };
+		A9AAA7D82C817ACB00913E47 /* TraningDataModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9AAA7D72C817ACB00913E47 /* TraningDataModels.swift */; };
+		A9AAA7DA2C817BE200913E47 /* TrainingDataStatistics.swift in Sources */ = {isa = PBXBuildFile; fileRef = A9AAA7D92C817BE200913E47 /* TrainingDataStatistics.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,6 +63,8 @@
 		A98B0D6C2C7CD16F00B26DFA /* StatisticsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticsView.swift; sourceTree = "<group>"; };
 		A98B0D6E2C7CD1A100B26DFA /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
 		A98B0D702C7CD21600B26DFA /* TrainingLogView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingLogView.swift; sourceTree = "<group>"; };
+		A9AAA7D72C817ACB00913E47 /* TraningDataModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TraningDataModels.swift; sourceTree = "<group>"; };
+		A9AAA7D92C817BE200913E47 /* TrainingDataStatistics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingDataStatistics.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -189,6 +193,8 @@
 			isa = PBXGroup;
 			children = (
 				A983B3C12C7AC7970054C341 /* TraningData.swift */,
+				A9AAA7D92C817BE200913E47 /* TrainingDataStatistics.swift */,
+				A9AAA7D72C817ACB00913E47 /* TraningDataModels.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -337,6 +343,8 @@
 				A983B39A2C7AC41F0054C341 /* ContentView.swift in Sources */,
 				A98B0D712C7CD21600B26DFA /* TrainingLogView.swift in Sources */,
 				A98B0D662C7C31DB00B26DFA /* AddExerciseView.swift in Sources */,
+				A9AAA7D82C817ACB00913E47 /* TraningDataModels.swift in Sources */,
+				A9AAA7DA2C817BE200913E47 /* TrainingDataStatistics.swift in Sources */,
 				A983B3982C7AC41F0054C341 /* FitnessTrackerApp.swift in Sources */,
 				A983B3C62C7AC85E0054C341 /* AddSessionView.swift in Sources */,
 				A983B3C22C7AC7970054C341 /* TraningData.swift in Sources */,
