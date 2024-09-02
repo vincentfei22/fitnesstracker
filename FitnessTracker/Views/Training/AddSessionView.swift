@@ -40,8 +40,6 @@ struct AddSessionView: View {
         let newSession = TrainingSession(
             date: date,
             bodyPart: bodyPart,
-            exercises: [],
-            duration: 0,
             startTime: date
         )
         trainingData.addSession(newSession)

@@ -7,6 +7,7 @@ struct AddExerciseView: View {
     @Binding var newlyAddedExercise: Exercise?
     @State private var newExerciseName = ""
     let bodyPart: String
+    @AppStorage("preferredWeightUnit") private var preferredWeightUnit = "kg"
 
     var body: some View {
         NavigationView {
@@ -23,7 +24,15 @@ struct AddExerciseView: View {
                         Button(action: {
                             addExercise(name: exerciseName)
                         }) {
-                            Text(exerciseName).foregroundColor(.primary)
+                            HStack {
+                                Text(exerciseName).foregroundColor(.primary)
+                                Spacer()
+                                if let weightRange = trainingData.getLastTrainingWeightRange(for: exerciseName) {
+                                    Text("上次重量：\(formatWeight(weightRange.min))-\(formatWeight(weightRange.max)) \(preferredWeightUnit)")
+                                        .font(.caption)
+                                        .foregroundColor(.gray)
+                                }
+                            }
                         }
                     }
                 }
@@ -46,5 +55,9 @@ struct AddExerciseView: View {
             newlyAddedExercise = newExercise
             isPresented = false
         }
+    }
+    
+    private func formatWeight(_ weight: Double) -> String {
+        return String(format: "%.1f", weight)
     }
 }

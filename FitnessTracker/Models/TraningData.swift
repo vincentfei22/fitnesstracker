@@ -60,4 +60,18 @@ class TrainingData: ObservableObject {
             print("Failed to load sessions: \(error.localizedDescription)")
         }
     }
+    func getLastTrainingWeightRange(for exercise: String) -> (min: Double, max: Double)? {
+        // 按日期降序排序会话，找到包含该动作的最近一次训练
+        guard let lastSession = sessions.sorted(by: { $0.date > $1.date })
+            .first(where: { session in
+                session.exercises.contains { $0.name == exercise }
+            }),
+            let lastExercise = lastSession.exercises.first(where: { $0.name == exercise }),
+            !lastExercise.sets.isEmpty else {
+            return nil
+        }
+        
+        let weights = lastExercise.sets.map { $0.weight }
+        return (min: weights.min() ?? 0, max: weights.max() ?? 0)
+    }
 }

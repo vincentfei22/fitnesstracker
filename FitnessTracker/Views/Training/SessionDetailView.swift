@@ -20,7 +20,10 @@ struct SessionDetailView: View {
             Section(header: Text("训练信息")) {
                 if isEditing {
                     DatePicker("日期", selection: $viewModel.date, displayedComponents: .date)
-                    TextField("训练部位", text: $viewModel.bodyPart)
+                    HStack {
+                        Text("训练部位")
+                        TextField("", text: $viewModel.bodyPart)
+                    }
                     HStack {
                         Text("时长（分钟）")
                         TextField("", value: $viewModel.duration, format: .number)
@@ -73,7 +76,7 @@ struct SessionDetailView: View {
         .navigationTitle("训练详情")
         .toolbar {
             ToolbarItem(placement: .navigationBarTrailing) {
-                Button(isEditing ? "完成" : "编辑") {
+                Button(isEditing ? "保存" : "编辑") {
                     isEditing.toggle()
                 }
             }
@@ -138,7 +141,7 @@ struct SessionDetailView: View {
                 date: viewModel.date,
                 bodyPart: viewModel.bodyPart,
                 exercises: viewModel.exercises,
-                duration: viewModel.duration,
+                duration: max(0, viewModel.duration),
                 startTime: viewModel.lastExerciseTime
             )
         }
@@ -165,8 +168,14 @@ class SessionViewModel: ObservableObject {
     func updateDuration() {
         let now = Date()
         if let lastTime = lastExerciseTime {
-            duration += Int(now.timeIntervalSince(lastTime) / 60)
+            let newDuration = duration + max(0, Int(now.timeIntervalSince(lastTime) / 60))
+            duration = max(0, newDuration)  // Ensure duration is non-negative
         }
         lastExerciseTime = now
+    }
+
+    func resetDuration() {
+        duration = 0
+        lastExerciseTime = date
     }
 }
