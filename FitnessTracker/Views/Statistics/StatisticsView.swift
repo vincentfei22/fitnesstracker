@@ -125,8 +125,8 @@ struct ScrollableVolumeChart: View {
             .chartXScale(
                 domain: ClosedRange(
                     uncheckedBounds: (
-                        lower: Calendar.current.date(byAdding: .day, value: -5, to: data.first?.0 ?? Date()) ?? Date(),
-                        upper: Calendar.current.date(byAdding: .day, value: 5, to: data.last?.0 ?? Date()) ?? Date()
+                        lower: Calendar.current.date(byAdding: .day, value: -3, to: data.first?.0 ?? Date()) ?? Date(),
+                        upper: Calendar.current.date(byAdding: .day, value: 3, to: data.last?.0 ?? Date()) ?? Date()
                     )
                 )
             )

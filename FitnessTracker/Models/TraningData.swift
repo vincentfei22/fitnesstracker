@@ -7,6 +7,12 @@ class TrainingData: ObservableObject {
         }
     }
 
+    private let fileManager = FileManager.default
+    private lazy var sessionsURL: URL = {
+        let documentsDirectory = fileManager.urls(for: .documentDirectory, in: .userDomainMask).first!
+        return documentsDirectory.appendingPathComponent("trainingSessions.plist")
+    }()
+
     init() {
         self.sessions = []
         loadSessions()
@@ -36,17 +42,19 @@ class TrainingData: ObservableObject {
 
     private func saveSessions() {
         do {
-            let data = try JSONEncoder().encode(sessions)
-            UserDefaults.standard.set(data, forKey: "trainingSessions")
+            let data = try PropertyListEncoder().encode(sessions)
+            try data.write(to: sessionsURL)
         } catch {
             print("Failed to save sessions: \(error.localizedDescription)")
         }
     }
 
     private func loadSessions() {
-        guard let data = UserDefaults.standard.data(forKey: "trainingSessions") else { return }
+        guard fileManager.fileExists(atPath: sessionsURL.path) else { return }
+        
         do {
-            sessions = try JSONDecoder().decode([TrainingSession].self, from: data)
+            let data = try Data(contentsOf: sessionsURL)
+            sessions = try PropertyListDecoder().decode([TrainingSession].self, from: data)
             sortSessions()
         } catch {
             print("Failed to load sessions: \(error.localizedDescription)")
